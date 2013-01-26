@@ -1,5 +1,6 @@
 (ns smuggler.core)
 
+; Our drug dolls to choose from
 (def drug-dolls
   [ "luke"        9   150
     "anthony"    13    35
@@ -24,10 +25,13 @@
     "sally"       4    50
     "babe"       30    10])
 
+; Generate a single doll data structure with the correct keys
 (def doll-structure (create-struct :name :weight :value))
 
+; Creates the individual set (:name, :weight, :value)
 (def dolls (vec (map #(apply struct doll-structure %) (partition 3 drug-dolls))))
 
+; Create a reference to cached bag
 (declare memoized-bag)
 
 (defn fill-bag
@@ -38,7 +42,7 @@
     (< index 0) [0 []]
     (zero? size-of-handbag) [0 []]
     :else
-    
+
     (let [{doll-weight :weight doll-value :value} (get dolls-available index)]
       (if (> doll-weight size-of-handbag)
         ; weights too much run again
