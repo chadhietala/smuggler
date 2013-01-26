@@ -26,12 +26,12 @@
     "babe"       30    10])
 
 ; Generate a single doll data structure with the correct keys
-(def doll-structure (create-struct :name :weight :value))
+(defstruct doll :name :weight :value)
 
 ; Creates a new doll-structure
-(def dolls (vec (map #(apply struct doll-structure %) (partition 3 drug-dolls))))
+(def dolls (vec (map #(apply struct doll %) (partition 3 drug-dolls))))
 
-; Create a reference to cached bag
+; Create a reference to cached bag but no bindings attached to it
 (declare memoized-bag)
 
 (defn fill-bag
@@ -40,17 +40,18 @@
   (cond
     ; Return 0 if the size of the handbag is 0 or index < 0
     (< index 0) [0 []]
-    (zero? size-of-handbag) [0 []]
+    (= size-of-handbag 0) [0 []]
     :else
 
     (let [{doll-weight :weight doll-value :value} (get dolls-available index)]
       (if (> doll-weight size-of-handbag)
-        ; weights too much run again
+        ; Doll doesn't fit call again
         (memoized-bag dolls-available (dec index) size-of-handbag)
         ; else
-        (let [ new-handbag-size (- size-of-handbag doll-weight)
+        (let [ new-handbag-size (- size-of-handbag doll-weight) ; Calculate the size of the bag with items in it
               [vn sn :as no] (memoized-bag dolls-available (dec index) size-of-handbag)
               [vy sy :as yes] (memoized-bag dolls-available (dec index) new-handbag-size)]
+
           (if (> (+ vy doll-value) vn)
             ; keep
             [(+ vy doll-value) (conj sy index)]
@@ -73,7 +74,9 @@
   (let [max-weight (prompt-weight "How much can the bag hold?")
         [total-value selected-dolls] (fill-bag dolls (- (count dolls) 1) max-weight)
         doll-names (map (comp :name dolls) selected-dolls)
+        doll-values (map (comp :value dolls) selected-dolls)
+        doll-weight (map (comp :weight dolls) selected-dolls)
     ]
     (println "Street Value:" total-value)
-    (println "Selected Dolls:" (reverse doll-names))
+    (println "Selected Dolls:" (reverse doll-names) (reverse doll-values) (reverse doll-weight))
     ))
