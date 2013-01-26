@@ -83,6 +83,6 @@
         ; return selected dolls as a map
         dolls-in-bag (map dolls selected-dolls)
     ]
-    (println "Street Value:" total-value)
-    (println "Selected Dolls:" (reverse dolls-in-bag))
+    (println "Value:" total-value)
+    (println "Dolls:" (reverse dolls-in-bag))
     ))

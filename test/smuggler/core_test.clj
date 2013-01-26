@@ -2,8 +2,24 @@
   (:use clojure.test
         smuggler.core))
 
-(def sally (fill-bag dolls (- (count dolls) 1) 4) )
+(def sally (fill-bag dolls (- (count dolls) 1) 4))
 
+(defstruct doll-struct :name :weight :value)
+
+(def correct-map [
+  (struct doll-struct "sally"       4    50)
+  (struct doll-struct "eddie"       7    20)
+  (struct doll-struct "grumpy"     22    80)
+  (struct doll-struct "dusty"      43    75)
+  (struct doll-struct "grumpkin"   42    70)
+  (struct doll-struct "marc"       11    70)
+  (struct doll-struct "randal"     27    60)
+  (struct doll-struct "puppy"      15    60)
+  (struct doll-struct "dorothy"    50   160)
+  (struct doll-struct "candice"   153   200)
+  (struct doll-struct "anthony"    13    35)
+  (struct doll-struct  "luke"       9   150)
+])
 
 
 (deftest smuggler-test
@@ -24,4 +40,16 @@
 
   (testing "Cast String to Integer"
     (is (= (parse-int "123") 123)))
+
+  (testing "Returns a list of maps of selected dolls"
+    (is (every? map? (let [[total-value selected-dolls] (fill-bag dolls (- (count dolls) 1) 400)
+                  dolls-in-bag (map dolls selected-dolls)] dolls-in-bag))))
+
+  (testing "Returns the correct list of maps"
+    (is (= (let [[total-value selected-dolls] (fill-bag dolls (- (count dolls) 1) 400)
+                  dolls-in-bag (map dolls selected-dolls)] (reverse dolls-in-bag))  correct-map)))
+
+  (testing "Returns the correct value"
+    (is (= (let [[total-value selected-dolls] (fill-bag dolls (- (count dolls) 1) 400)]
+     total-value)  1030)))
 )
