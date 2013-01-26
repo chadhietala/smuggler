@@ -58,6 +58,7 @@
           ; if the value of keeping is greater than the value of skipping
           (if (> (+ value-if-keep doll-value) value-if-skip)
             ; keep
+            ; increase the value if keept and use conj to push the index into the yes vector
             [(+ value-if-keep doll-value) (conj yes-vec index)]
             ; skip 
             no))))))
@@ -77,7 +78,9 @@
 
 (defn -main []
   (let [max-weight (prompt-weight "How much can the bag hold?")
+        ; Destructured assignment to reference first and second item in fill-bag result
         [total-value selected-dolls] (fill-bag dolls (- (count dolls) 1) max-weight)
+        ; return selected dolls as a map
         dolls-in-bag (map dolls selected-dolls)
     ]
     (println "Street Value:" total-value)
