@@ -48,8 +48,7 @@
         ; The passed in doll doesn't fit... recurse
         (memoized-bag dolls-available (dec index) size-of-handbag)
 
-        ; else
-        ; Calculate the size of the bag with the item in it
+        ; Otherwise calculate the size of the bag with the item in it
         (let [ new-handbag-size (- size-of-handbag doll-weight)
               ; Create alias to the skip/keep vectors and the value of that matrix
               [value-if-skip no-vec :as no] (memoized-bag dolls-available (dec index) size-of-handbag)
@@ -57,10 +56,10 @@
 
           ; if the value of keeping is greater than the value of skipping
           (if (> (+ value-if-keep doll-value) value-if-skip)
-            ; keep
+            ; keep the doll
             ; increase the value if keept and use conj to push the index into the yes vector
             [(+ value-if-keep doll-value) (conj yes-vec index)]
-            ; skip 
+            ; skip the doll 
             no))))))
 
 ; memoize each fill-bag function call
