@@ -1,13 +1,3 @@
 # smuggler
 
-A Clojure library designed to ... well, that part is up to you.
-
-## Usage
-
-FIXME
-
-## License
-
-Copyright © 2013 FIXME
-
-Distributed under the Eclipse Public License, the same as Clojure.
+A solution to the drug smuggler / knapsack algorithm using Clojure and Leiningen. 
