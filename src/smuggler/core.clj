@@ -28,7 +28,7 @@
 ; Generate a single doll data structure with the correct keys
 (defstruct doll :name :weight :value)
 
-; Creates a new doll-structure
+; Creates a new doll vector
 (def dolls (vec (map #(apply struct doll %) (partition 3 drug-dolls))))
 
 ; Create a reference to cached bag but no bindings attached to it
@@ -36,6 +36,7 @@
 
 ; Fills the bag recursivly 
 (defn fill-bag [dolls-available index size-of-handbag]
+
   (cond
     ; Return 0 if the size of the handbag is 0 or index < 0
     (< index 0) [0 []]
@@ -44,20 +45,24 @@
 
     (let [{doll-weight :weight doll-value :value} (get dolls-available index)]
       (if (> doll-weight size-of-handbag)
-        ; Doll doesn't fit call again
+        ; The passed in doll doesn't fit... recurse
         (memoized-bag dolls-available (dec index) size-of-handbag)
 
-        ; Creates a silent else statment
-        (let [ new-handbag-size (- size-of-handbag doll-weight) ; Calculate the size of the bag with items in it
-              [vn sn :as no] (memoized-bag dolls-available (dec index) size-of-handbag)
-              [vy sy :as yes] (memoized-bag dolls-available (dec index) new-handbag-size)]
+        ; else
+        ; Calculate the size of the bag with the item in it
+        (let [ new-handbag-size (- size-of-handbag doll-weight)
+              ; Create alias to the skip/keep vectors and the value of that matrix
+              [value-if-skip no-vec :as no] (memoized-bag dolls-available (dec index) size-of-handbag)
+              [value-if-keep yes-vec :as yes] (memoized-bag dolls-available (dec index) new-handbag-size)]
 
-          (if (> (+ vy doll-value) vn)
+          ; if the value of keeping is greater than the value of skipping
+          (if (> (+ value-if-keep doll-value) value-if-skip)
             ; keep
-            [(+ vy doll-value) (conj sy index)]
-            ; skip / shortcut
+            [(+ value-if-keep doll-value) (conj yes-vec index)]
+            ; skip 
             no))))))
 
+; memoize each fill-bag function call
 (def memoized-bag (memoize fill-bag))
 
 ; make sure the input is an Int
