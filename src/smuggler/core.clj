@@ -34,15 +34,15 @@
 ; Create a reference to cached bag but no bindings attached to it
 (declare memoized-bag)
 
-; Fills the bag recursivly 
-(defn fill-bag [dolls-available index size-of-handbag]
 
+(defn fill-bag [dolls-available index size-of-handbag]
   (cond
     ; Return 0 if the size of the handbag is 0 or index < 0
     (< index 0) [0 []]
     (= size-of-handbag 0) [0 []]
     :else
 
+    ; Assign doll-weight and doll-value based on dolls index lookup
     (let [{doll-weight :weight doll-value :value} (get dolls-available index)]
       (if (> doll-weight size-of-handbag)
         ; The passed in doll doesn't fit... recurse
