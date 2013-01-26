@@ -28,7 +28,7 @@
 ; Generate a single doll data structure with the correct keys
 (def doll-structure (create-struct :name :weight :value))
 
-; Creates the individual set (:name, :weight, :value)
+; Creates a new doll-structure
 (def dolls (vec (map #(apply struct doll-structure %) (partition 3 drug-dolls))))
 
 ; Create a reference to cached bag
@@ -59,18 +59,18 @@
 
 (def memoized-bag (memoize fill-bag))
 
-; parse input to integer
+; make sure the input is an Int
 (defn parse-int [string]
   (Integer. (re-find #"[0-9]*" string)))
 
-; Setup a prompt to ask questions
-(defn prompt-read [prompt]
+; Setup a prompt to ask the weight
+(defn prompt-weight [prompt]
   (print (format "%s: " prompt))
   (flush)
   (parse-int (read-line)))
 
 (defn -main []
-  (let [max-weight (prompt-read "How much can the bag hold?")
+  (let [max-weight (prompt-weight "How much can the bag hold?")
         [total-value selected-dolls] (fill-bag dolls (- (count dolls) 1) max-weight)
         doll-names (map (comp :name dolls) selected-dolls)
     ]
