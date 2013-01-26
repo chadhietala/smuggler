@@ -34,9 +34,8 @@
 ; Create a reference to cached bag but no bindings attached to it
 (declare memoized-bag)
 
-(defn fill-bag
-  "Fill the handbag. Pass in info from generate-shipment, count of dolls and size of handbag"
-  [dolls-available index size-of-handbag]
+; Fills the bag recursivly 
+(defn fill-bag [dolls-available index size-of-handbag]
   (cond
     ; Return 0 if the size of the handbag is 0 or index < 0
     (< index 0) [0 []]
@@ -47,7 +46,8 @@
       (if (> doll-weight size-of-handbag)
         ; Doll doesn't fit call again
         (memoized-bag dolls-available (dec index) size-of-handbag)
-        ; else
+
+        ; Creates a silent else statment
         (let [ new-handbag-size (- size-of-handbag doll-weight) ; Calculate the size of the bag with items in it
               [vn sn :as no] (memoized-bag dolls-available (dec index) size-of-handbag)
               [vy sy :as yes] (memoized-bag dolls-available (dec index) new-handbag-size)]
@@ -73,10 +73,8 @@
 (defn -main []
   (let [max-weight (prompt-weight "How much can the bag hold?")
         [total-value selected-dolls] (fill-bag dolls (- (count dolls) 1) max-weight)
-        doll-names (map (comp :name dolls) selected-dolls)
-        doll-values (map (comp :value dolls) selected-dolls)
-        doll-weight (map (comp :weight dolls) selected-dolls)
+        dolls-in-bag (map dolls selected-dolls)
     ]
     (println "Street Value:" total-value)
-    (println "Selected Dolls:" (reverse doll-names) (reverse doll-values) (reverse doll-weight))
+    (println "Selected Dolls:" (reverse dolls-in-bag))
     ))
